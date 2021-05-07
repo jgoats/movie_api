@@ -1,0 +1,35 @@
+{
+  "name": "movie_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node": "^16.1.0",
+    "mongoose": "^5.12.7",
+    "passport-jwt": "^4.0.0",
+    "express-validator": "^6.10.1",
+    "morgan": "^1.10.0",
+    "passport-local": "^1.0.0",
+    "passport": "^0.4.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgoats/movie_api.git"
+  },
+  "author": "Justin Goats",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jgoats/movie_api/issues"
+  },
+  "homepage": "https://github.com/jgoats/movie_api#readme"
+}
