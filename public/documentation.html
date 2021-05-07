@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Api</title>
+</head>
+<body style="text-align:center;font-style:italic;margin-right:20%;margin-left:20%;">
+<h3>This is a simple to use api that allows developers to access information about movies. This includes,
+    information about actors , genres , movie budget , box office sales and more to come!
+</h3>
+<h1>Endpoints:</h1>
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/movies</h3>
+<h4>Data returned :  Data holding all information on all movies in the movie list. Sent in JSON format.
+     "title" , "Genre" , "Director" , "imageURL" , "description" , "featured"</h4>
+<h3>HTTP Method : GET</h3>
+<h3>Query Parameters: none</h3>
+<h3>Request Body Format : no request body needed</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/movies/:movie</h3>
+<h4>Data returned : json object holding information on a single movie 
+    "title" , "Genre" , "Director" , "imageURL" , "description" , "featured"
+</h4>
+<h3>HTTP Method : GET</h3>
+<h3>Query Parameters: :movie</h3>
+<h3>Request Body Format : no request body needed</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/movies/:movie/genre</h3>
+<h4>Data returned : json object holding the genre of the movie
+    "name" , "description"
+</h4>
+<h3>HTTP Method : GET</h3>
+<h3>Query Parameters: :movie</h3>
+<h3>Request Body Format : no request body needed</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/movies/:movie/director</h3>
+<h4>Data returned : json object holding data about the director
+    "name" , "bio" , "born" "death"
+</h4>
+<h3>HTTP Method : GET</h3>
+<h3>Query Parameters: :movie</h3>
+<h3>Request Body Format : no request body needed</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/users</h3>
+<h4>Data returned : status code of 201 as well as data of the newly entered user with a success message
+</h4>
+<h3>HTTP Method : POST</h3>
+<h3>Query Parameters: none</h3>
+<h3>Request Body Format:
+    "birthday": "04-14-1996",
+    "email": "jp_goats@yahoo.com",
+    "password": "mike123",
+    "username": "mike"
+</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/users/:Username</h3>
+<h4>Data returned : The newly inserted data for the user in json format as well as a status code of 201</h4>
+<h3>HTTP Method : PUT</h3>
+<h3>Query Parameters :Username</h3>
+<h3>Request Body Format : 
+    "FavoriteMovies": [],
+    "_id": "60753df5501f6542848300ba",
+    "username": "mike",
+    "password": "mike456",
+    "email": "jp_goats@yahoo.com",
+    "birthday": "1996-04-14T07:00:00.000Z",
+    "__v": 0</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/users/:Username/favorites/:MovieID</h3>
+<h4>Data returned : json object containing the newly added favorite movie for the user</h4>
+<h3>HTTP Method : POST</h3>
+<h3>Query Parameters: Username , MovieID</h3>
+<h3>Request Body Format : none</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/users/:Username/favorites/:MovieID</h3>
+<h4>Returns updated data in json
+</h4>
+<h3>HTTP Method : DELETE</h3>
+<h3>Query Parameters: Username , MovieID</h3>
+<h3>Request Body Format : no request body needed</h3>
+<h3>Response Body Format : JSON</h3>
+</div>
+
+<div style="background-color:whitesmoke;color:black;
+margin-left:auto;margin-right:auto;width:400px;padding:20px;">
+<h3>/users/:Username</h3>
+<h4>Data returned : message indicating the user was successfully deleted
+</h4>
+<h3>HTTP Method : DELETE</h3>
+<h3>Query Parameters: Username</h3>
+<h3>Request Body Format : not yet specified</h3>
+<h3>Response Body Format : string</h3>
+</div>
+   
+</body>
+</html>
