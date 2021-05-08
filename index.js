@@ -60,7 +60,7 @@ app.get('/movies/:movie' , passport.authenticate('jwt', { session: false }), (re
     });
   });
 
-  app.post('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+  app.post('/users', (req, res) => {
     Users.findOne({ username: req.body.username })
       .then((user) => {
         if (user) {
