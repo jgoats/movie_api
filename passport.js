@@ -1,11 +1,11 @@
-const passport = Require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const Models = require("./models.js");
-const passportJWT = require("passport-jwt");
+const passport = require('passport'),
+  LocalStrategy = require('passport-local').Strategy,
+  Models = require('./models.js'),
+  passportJWT = require('passport-jwt');
 
-    let Users = Models.User,
-    JWTStrategy = passportJWT.Strategy,
-    ExtractJWT = passportJWT.ExtractJWT;
+let Users = Models.User,
+  JWTStrategy = passportJWT.Strategy,
+  ExtractJWT = passportJWT.ExtractJwt;
    // defines your basic HTTP authentication for login requests.
     passport.use(new LocalStrategy({
         usernameField: 'username',
