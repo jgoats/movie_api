@@ -8,7 +8,7 @@ const Users = Models.User;
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost:27017/myFLIXDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/myFLIXDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 app.get("/" , (request , response)=> {
     response.send("welcome to the myFLIX API");
@@ -113,6 +113,22 @@ app.get('/movies/:movie' , (req, res) => {
       }
     });
   });
+
+  app.delete('/users/:Username/deleteFavoriteMovie/:MovieID',  (req, res) => {
+    Users.findOneAndUpdate({username: req.params.Username}, {
+         $pull: { favoriteMovies: req.params.MovieID} },
+    {new: true},
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    });
+  });
+
+  
 
   // allows user to delete their account
   app.delete('/users/:Username' , (req, res) => {
