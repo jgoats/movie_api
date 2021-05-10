@@ -7,14 +7,14 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const passport = require('passport');
 const cors = require('cors');
-const { body, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 app.use(bodyParser.json());
 require('./passport');
 app.use(cors());
 
 //express is available inside the ./auth file 
 let auth = require('./auth')(app);
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+mongoose.connect('mongodb+srv://Evanescence426:Skyline%401843@multi.yh94s.mongodb.net/myFLIXDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 app.get("/" , (request , response)=> {
     response.send("welcome to the myFLIX API");
@@ -64,10 +64,10 @@ app.get('/movies/:movie' , passport.authenticate('jwt', { session: false }), (re
   });
 
   app.post('/users', [
-    body('username', 'Username is required').isLength({min: 5}),
-    body('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    body('password', 'Password is required').not().isEmpty(),
-    body('email', 'Email does not appear to be valid').isEmail()
+    check('username', 'username is required').isLength({min: 5}),
+    check('username', 'username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('password', 'password is required').not().isEmpty(),
+    check('email', 'email does not appear to be valid').isEmail()
   ], (req, res) => {
      // check the validation object for errors
      let errors = validationResult(req);
