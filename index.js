@@ -64,10 +64,10 @@ app.get('/movies/:movie' , passport.authenticate('jwt', { session: false }), (re
   });
 
   app.post('/users', [
-    check('Username', 'Username is required').isLength({min: 5}),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
+    check('username', 'Username is required').isLength({min: 5}),
+    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail()
   ], (req, res) => {
      // check the validation object for errors
      let errors = validationResult(req);
