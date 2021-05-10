@@ -29,7 +29,7 @@ app.get("/movies" , passport.authenticate('jwt', { session: false }), (request ,
     })
 })
 
-app.get("/allusers" , passport.authenticate('jwt' , {session : false}) , (req , res) => {
+app.get("/allusers" , passport.authenticate('jwt' , {session : false}) , (request , response) => {
   Users.find()
     .then ((users) => {
       response.status(201).json(users)
