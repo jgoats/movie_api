@@ -16,7 +16,7 @@ app.use(cors());
 let auth = require('./auth')(app);
 mongoose.connect('mongodb://localhost:27017/myFLIXDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
-app.get("/" , passport.authenticate('jwt', { session: false }), (request , response)=> {
+app.get("/" , (request , response)=> {
     response.send("welcome to the myFLIX API");
   });
 
