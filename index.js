@@ -7,7 +7,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const passport = require('passport');
 const cors = require('cors');
-const { check, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 app.use(bodyParser.json());
 require('./passport');
 app.use(cors());
@@ -64,10 +64,10 @@ app.get('/movies/:movie' , passport.authenticate('jwt', { session: false }), (re
   });
 
   app.post('/users', [
-    check('username', 'Username is required').isLength({min: 5}),
-    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('password', 'Password is required').not().isEmpty(),
-    check('email', 'Email does not appear to be valid').isEmail()
+    body('username', 'Username is required').isLength({min: 5}),
+    body('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    body('password', 'Password is required').not().isEmpty(),
+    body('email', 'Email does not appear to be valid').isEmail()
   ], (req, res) => {
      // check the validation object for errors
      let errors = validationResult(req);
