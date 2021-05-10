@@ -29,6 +29,15 @@ app.get("/movies" , passport.authenticate('jwt', { session: false }), (request ,
     })
 })
 
+app.get("/getusers" , passport.authenticate('jwt' , {session : false}) , (req , res) => {
+  Users.find().then ((users) => {
+    res.status(201).json(users)
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).send(err)
+  })
+})
+
 app.get('/movies/:movie' , passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({title: req.params.movie})
         .then((movies) => {
