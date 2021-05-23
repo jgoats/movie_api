@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 require('./passport');
 app.use(cors());
 
-//express is available inside the ./auth file 
+//express is available inside the ./auth file
 let auth = require('./auth')(app);
 mongoose.connect(process.env.CONNECTION_URI), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false };
 app.get("/", (request, response) => {
