@@ -1,25 +1,20 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const app = express();
 const mongoose = require("mongoose");
 const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
-const { check, validationResult } = require('express-validator');
-const app = express();
-const cors = require('cors');
-app.use(cors());
-app.use(bodyParser.json());
-
-app.use((err, request, response, next) => {
-  console.error(error.stack);
-  response.status(500).send('Something broke!');
-});
-
-let auth = require('./auth')(app);
 const passport = require('passport');
+const cors = require('cors');
+const { check, validationResult } = require('express-validator');
+app.use(bodyParser.json());
 require('./passport');
-//express is available inside the ./auth file useFindAndModify: false 
-mongoose.connect(process.env.CONNECTION_URI), { useNewUrlParser: true, useUnifiedTopology: true };
+app.use(cors());
+
+//express is available inside the ./auth file 
+let auth = require('./auth')(app);
+mongoose.connect(process.env.CONNECTION_URI), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
@@ -31,18 +26,8 @@ app.get("/movies", (request, response) => {
     }).catch((err) => {
       console.log(err);
       response.status(500).send(err)
-    });
-});
-
-app.get("/allusers", passport.authenticate('jwt', { session: false }), (request, response) => {
-  Users.find()
-    .then((users) => {
-      response.status(201).json(users);
-    }).catch((err) => {
-      console.log(err);
-      response.status(500).send(err);
-    });
-});
+    })
+})
 
 app.get('/movies/:movie', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.movie })
@@ -106,9 +91,9 @@ app.post('/users', [
           .catch((error) => {
             console.error(error);
             res.status(500).send('Error: ' + error);
-          });
+          })
       }
-    });
+    })
 });
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -176,6 +161,13 @@ app.delete('/users/:Username', (req, res) => {
       console.error(err);
       res.status(500).send('Error: ' + err);
     });
+});
+
+
+
+app.use((err, request, response, next) => {
+  console.error(error.stack);
+  response.status(500).send('Something broke!');
 });
 
 const port = process.env.PORT || 8080;
