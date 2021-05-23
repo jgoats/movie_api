@@ -26,18 +26,18 @@ app.get("/movies", (request, response) => {
     }).catch((err) => {
       console.log(err);
       response.status(500).send(err)
-    })
-})
+    });
+});
 
 app.get("/allusers", passport.authenticate('jwt', { session: false }), (request, response) => {
   Users.find()
     .then((users) => {
-      response.status(201).json(users)
+      response.status(201).json(users);
     }).catch((err) => {
       console.log(err);
-      response.status(500).send(err)
-    })
-})
+      response.status(500).send(err);
+    });
+});
 
 app.get('/movies/:movie', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.movie })
@@ -101,9 +101,9 @@ app.post('/users', [
           .catch((error) => {
             console.error(error);
             res.status(500).send('Error: ' + error);
-          })
+          });
       }
-    })
+    });
 });
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
