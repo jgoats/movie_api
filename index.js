@@ -1,20 +1,25 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
 const mongoose = require("mongoose");
 const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
-const passport = require('passport');
-const cors = require('cors');
 const { check, validationResult } = require('express-validator');
-app.use(bodyParser.json());
-require('./passport');
+const app = express();
+const cors = require('cors');
 app.use(cors());
+app.use(bodyParser.json());
 
-//express is available inside the ./auth file
+app.use((err, request, response, next) => {
+  console.error(error.stack);
+  response.status(500).send('Something broke!');
+});
+
 let auth = require('./auth')(app);
-mongoose.connect(process.env.CONNECTION_URI), { useUnifiedTopology: true, useFindAndModify: false };
+const passport = require('passport');
+require('./passport');
+//express is available inside the ./auth file useFindAndModify: false 
+mongoose.connect(process.env.CONNECTION_URI), { useNewUrlParser: true, useUnifiedTopology: true };
 app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
@@ -171,13 +176,6 @@ app.delete('/users/:Username', (req, res) => {
       console.error(err);
       res.status(500).send('Error: ' + err);
     });
-});
-
-
-
-app.use((err, request, response, next) => {
-  console.error(error.stack);
-  response.status(500).send('Something broke!');
 });
 
 const port = process.env.PORT || 8080;
