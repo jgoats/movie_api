@@ -14,8 +14,7 @@ app.use(cors());
 
 //express is available inside the ./auth file 
 let auth = require('./auth')(app);
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).
-  catch(error => handleError(error));
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
