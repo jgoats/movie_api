@@ -19,15 +19,14 @@ app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
 
-app.get("/movies", passport.authenticate('jwt', { session: false }), (request, response) => {
-  Movies.find()
-    .then((movies) => {
-      response.status(201).json(movies)
-    }).catch((err) => {
-      console.log(err);
-      response.status(500).send(err)
-    })
-})
+app.get("/movies", (request, response) => {
+  Movies.find().then((movies) => {
+    response.status(201).json(movies)
+  }).catch((err) => {
+    console.log(err);
+    response.status(500).send(err)
+  });
+});
 
 app.get('/movies/:movie', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.movie })
@@ -93,7 +92,10 @@ app.post('/users', [
             res.status(500).send('Error: ' + error);
           })
       }
-    })
+    }).catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -166,7 +168,7 @@ app.delete('/users/:Username', (req, res) => {
 
 
 app.use((err, request, response, next) => {
-  console.error(error.stack);
+  console.error(err.stack);
   response.status(500).send('Something broke!');
 });
 
