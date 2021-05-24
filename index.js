@@ -8,6 +8,7 @@ const Users = Models.User;
 const passport = require('passport');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
+const { Console } = require("console");
 app.use(bodyParser.json());
 require('./passport');
 app.use(cors());
@@ -15,6 +16,9 @@ app.use(cors());
 //express is available inside the ./auth file 
 let auth = require('./auth')(app);
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+mongoose.connection.on("connected", () => {
+  console.log("mongoose is connected!!!");
+})
 app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
