@@ -93,7 +93,10 @@ app.post('/users', [
             res.status(500).send('Error: ' + error);
           })
       }
-    })
+    }).catch((error) => {
+      console.log(error);
+      res.status(500).send("Error: " + error)
+    });
 });
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -166,7 +169,7 @@ app.delete('/users/:Username', (req, res) => {
 
 
 app.use((err, request, response, next) => {
-  console.error(error.stack);
+  console.error(err.stack);
   response.status(500).send('Something broke!');
 });
 
