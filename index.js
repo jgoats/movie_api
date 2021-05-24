@@ -14,12 +14,12 @@ app.use(cors());
 
 //express is available inside the ./auth file 
 let auth = require('./auth')(app);
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
 
-app.get("/movies", (request, response) => {
+app.get("/movies", passport.authenticate('jwt', { session: false }), (request, response) => {
   Movies.find()
     .then((movies) => {
       response.status(201).json(movies)
@@ -93,10 +93,7 @@ app.post('/users', [
             res.status(500).send('Error: ' + error);
           })
       }
-    }).catch((error) => {
-      console.log(error);
-      res.status(500).send("Error: " + error)
-    });
+    })
 });
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -169,7 +166,7 @@ app.delete('/users/:Username', (req, res) => {
 
 
 app.use((err, request, response, next) => {
-  console.error(err.stack);
+  console.error(error.stack);
   response.status(500).send('Something broke!');
 });
 
