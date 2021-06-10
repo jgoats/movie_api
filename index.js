@@ -14,7 +14,8 @@ app.use(cors());
 
 //express is available inside the ./auth file 
 let auth = require('./auth')(app);
-// remember to add connection variable in the future.
+// remember to add connection variable in the future. 'mongodb://localhost:27017/myapp'
+// ''
 mongoose.connect('mongodb+srv://Evanescence426:Skyline%401843@multi.yh94s.mongodb.net/myFLIXDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 app.get("/", (request, response) => {
