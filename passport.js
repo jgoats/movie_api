@@ -1,46 +1,64 @@
 const passport = require('passport'),
-  LocalStrategy = require('passport-local').Strategy,
-  Models = require('./models.js'),
-  passportJWT = require('passport-jwt');
+  localStrategy = require('passport-local').Strategy,
+  passportJWT = require('passport-jwt'),
+  Models = require('./models.js');
 
-let Users = Models.User,
+let users = Models.user,
   JWTStrategy = passportJWT.Strategy,
-  ExtractJWT = passportJWT.ExtractJwt;
-// defines your basic HTTP authentication for login requests.
-passport.use(new LocalStrategy({
-  usernameField: 'username',
-  passwordField: 'password'
-}, (username, password, done) => {
-  console.log(username + '  ' + password);
-  Users.findOne({ username: username }, (error, user) => {
-    if (error) {
-      console.log(error);
-      return done(error);
-    }
+  ExtractJwt = passportJWT.ExtractJwt;
+/* 
+  Local Strategy: Authentication
+*/
+passport.use(new localStrategy(
+  {
+    usernameField: 'username',
+    passwordField: 'password'
+  },
+  (username, password, done) => {
+    console.log(`Username: ${username} Password: ${password}`);
+    Users.findOne({
+      username: username
+    }).then(user => {
+      if (!user) {
+        return done(null, false, 'Incorrect username...');
+      }
+      if (!user.validatePassword(password)) {
+        return done(null, false, 'Incorrect password...');
+      }
 
-    if (!user) {
-      console.log('incorrect username');
-      return done(null, false, { message: 'Incorrect username or password.' });
-    }
-    if (!user.verifyPassword(password)) {
-      console.log('incorrect password');
-      return done(null, false, { message: 'Incorrect password.' });
-    }
+      // console.log('Finished');
+      return done(null, user);
+    }).catch(err => {
+      done(err, false, { 'Error': err });
+    });
+  }));
+/*
+  JSON Web Token Strategy: Aurthorization
+*/
 
-    console.log('finished');
-    return done(null, user);
-  });
-}));
+// This options will be use in the subsequent JWTStrategy to define how the JWT will be extrated from the request or veritfied
 
-passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+// See: http://www.passportjs.org/packages/passport-jwt/ for details
+
+const opts = {
+  // jwtFromRequest (Required): is a function that extract the jwt from the request with data type of string or null in not found. 
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  // token is a Privacy Enhanced Mail (Base-64) enhance string
   secretOrKey: 'your_jwt_secret'
-}, (jwtPayload, callback) => {
-  return Users.findById(jwtPayload._id)
-    .then((user) => {
-      return callback(null, user);
+}
+
+passport.use(new JWTStrategy(opts, (jwtPayload, done) => {
+  return Users.findOne({
+    _id: jwtPayload._id
+  })
+    .then(user => {
+      if (!user) {
+        return done(null, false, { message: 'User does not exist' });
+      }
+
+      return done(null, user);
     })
-    .catch((error) => {
-      return callback(error)
+    .catch(err => {
+      done(err, false, { 'Error': err });
     });
 }));
