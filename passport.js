@@ -7,9 +7,12 @@ let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJwt = passportJWT.ExtractJwt;
 bcrypt = require("bcrypt");
-/* 
-  Local Strategy: Authentication
-*/
+
+passport.use(initialize());
+passport.use(session());
+passport.serializeUser(function (user, done) {
+  done(null, user._id)
+})
 passport.use(new localStrategy((username, password, done) => {
   console.log(`Username: ${username} Password: ${password}`);
   Users.findOne({
