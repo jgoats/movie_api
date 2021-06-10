@@ -6,32 +6,27 @@ const passport = require('passport'),
 let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJwt = passportJWT.ExtractJwt;
+bcrypt = require("bcrypt");
 /* 
   Local Strategy: Authentication
 */
-passport.use(new localStrategy(
-  {
-    usernameField: 'username',
-    passwordField: 'password'
-  },
-  (username, password, done) => {
-    console.log(`Username: ${username} Password: ${password}`);
-    Users.findOne({
-      username: username
-    }).then(user => {
-      if (!user) {
-        return done(null, false, 'Incorrect username...');
-      }
-      if (!user.validatePassword(password)) {
-        return done(null, false, `Incorrect password... ${password}${user}`);
-      }
-
-      // console.log('Finished');
+passport.use(new localStrategy((username, password, done) => {
+  console.log(`Username: ${username} Password: ${password}`);
+  Users.findOne({
+    username: username
+  }, function (err, user) {
+    if (err) { return done(err) }
+    if (!user) {
+      return done(null, false, 'Incorrect username...');
+    }
+    bcrypt.compare(password, user.password, function (err, res) {
+      if (err) return done(err);
+      if (res === false) return done(null, false, { message: "password is incorrect" });
       return done(null, user);
-    }).catch(err => {
-      done(err, false, { 'Error': err });
-    });
-  }));
+    })
+  })
+
+}));
 /*
   JSON Web Token Strategy: Aurthorization
 */
