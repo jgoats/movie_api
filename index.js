@@ -20,7 +20,7 @@ mongoose.connect('mongodb+srv://Evanescence426:Skyline%401843@multi.yh94s.mongod
 app.get("/", (request, response) => {
   response.send("welcome to the myFLIX API");
 });
-
+// get all movies
 app.get("/movies", (request, response) => {
   Movies.find()
     .then((movies) => {
@@ -30,7 +30,7 @@ app.get("/movies", (request, response) => {
       response.status(500).send(err)
     })
 })
-
+// get movie by title
 app.get('/movies/:movie', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.movie })
     .then((movies) => {
@@ -41,7 +41,7 @@ app.get('/movies/:movie', passport.authenticate('jwt', { session: false }), (req
       res.status(500).send('Error: ' + err);
     });
 });
-
+//get the genre for a single movie
 app.get("/movies/:movie/genre", passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.movie })
     .then((movie) => {
@@ -52,7 +52,7 @@ app.get("/movies/:movie/genre", passport.authenticate('jwt', { session: false })
       res.status(500).send('Error: ' + err);
     });
 });
-
+// get the director for a single movie
 app.get("/movies/:movie/director", passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.movie })
     .then((movie) => {
@@ -63,7 +63,29 @@ app.get("/movies/:movie/director", passport.authenticate('jwt', { session: false
       res.status(500).send('Error: ' + err);
     });
 });
-
+// get all users
+app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+// get user by username
+app.get('/users/:Username', (req, res) => {
+  Users.findOne({ username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+// add a new user
 app.post('/users', [
   check('username', 'username is required').isLength({ min: 5 }),
   check('username', 'username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
@@ -97,7 +119,7 @@ app.post('/users', [
       }
     })
 });
-
+// update a single user
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ username: req.params.Username }, {
     $set:
@@ -118,7 +140,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (r
       }
     });
 });
-
+// add movie to favorite movies for a single user
 app.post('/users/:Username/favorites/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ username: req.params.Username }, {
     $addToSet: { favoriteMovies: req.params.MovieID }
@@ -133,7 +155,7 @@ app.post('/users/:Username/favorites/:MovieID', passport.authenticate('jwt', { s
       }
     });
 });
-
+// delete favorite movie for a single user
 app.delete('/users/:Username/deleteFavoriteMovie/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ username: req.params.Username }, {
     $pull: { favoriteMovies: req.params.MovieID }
