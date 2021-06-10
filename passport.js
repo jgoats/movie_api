@@ -6,13 +6,7 @@ const passport = require('passport'),
 let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJwt = passportJWT.ExtractJwt;
-bcrypt = require("bcrypt");
 
-passport.use(initialize());
-passport.use(session());
-passport.serializeUser(function (user, done) {
-  done(null, user._id)
-})
 passport.use(new localStrategy((username, password, done) => {
   console.log(`Username: ${username} Password: ${password}`);
   Users.findOne({
@@ -22,11 +16,10 @@ passport.use(new localStrategy((username, password, done) => {
     if (!user) {
       return done(null, false, 'Incorrect username...');
     }
-    bcrypt.compare(password, user.password, function (err, res) {
-      if (err) return done(err);
-      if (res === false) return done(null, false, { message: "password is incorrect" });
-      return done(null, user);
-    })
+    if (!user.validatePassword(password)) {
+      return done(null, false, "incorrect Password...")
+    }
+    return done(null, user);
   })
 
 }));
