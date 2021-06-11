@@ -23,7 +23,7 @@ passport.use(new LocalStrategy({
       return callback(null, false, { message: 'Incorrect username.' });
     }
 
-    if (!user.validatePassword(password)) {
+    if (user[0].password !== password) {
       console.log('incorrect password here');
       return callback(null, false, { message: 'Incorrect password.' });
     }
