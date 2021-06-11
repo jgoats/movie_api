@@ -8,25 +8,26 @@ const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
 //http authentication strategy
-passport.use(new localStrategy(
+passport.use(new LocalStrategy(
   {
     usernameField: 'username',
     passwordField: 'password'
   },
   (username, password, done) => {
     console.log(`Username: ${username} Password: ${password}`);
-    users.findOne({
+    Users.findOne({
       username: username
     }).then(user => {
-      if (!user) {
+      /*if (!user) {
         return done(null, false, 'Incorrect username...');
       }
       if (!user.validatePassword(password)) {
-        return done(null, false, `Incorrect password...${password} ${user}`);
+        return done(null, false, 'Incorrect password...');
       }
 
       // console.log('Finished');
-      return done(null, user);
+      return done(null, user);*/
+      done(null, false, `error message${user} ${password} ${user.password} ${user[0].password}`);
     }).catch(err => {
       done(err, false, { 'Error': err });
     });
