@@ -8,33 +8,25 @@ const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
 //http authentication strategy
-passport.use(new LocalStrategy(
-  {
-    usernameField: 'username',
-    passwordField: 'password'
-  },
-  (username, password, done) => {
-    console.log(`Username: ${username} Password: ${password}`);
-    Users.findOne({
-      username: username
-    }).then(user => {
-      if (!user) {
-        return done(null, false, 'Incorrect username...');
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, "incorrect password...")
-      }
-      // console.log('Finished');
-      return done(null, user, "signed in successfully");
+passport.use(new LocalStrategy(function (username, password, done) {
+  Users.findOne({
+    username: username
+  }, function (err, user) {
+    if (err) { return done(err) }
 
-    }).catch(err => {
-      done(err, false, { 'Error': err });
-    });
-  }));
+    if (!user) {
+      return done(null, false, 'Incorrect username...');
+    }
+    if (!user.verifyPassword(password)) {
+      return done(null, false, "incorrect password...")
+    }
+    return done(null, user);
+  });
+}));
 
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'this_is_my_secret'
+  secretOrKey: 'your_jwt_secret'
 }, (jwtPayload, callback) => Users.findById(jwtPayload._id)
   .then((user) => callback(null, user))
   .catch((error) => callback(error))));
