@@ -1,55 +1,41 @@
-const passport = require('passport'),
-  localStrategy = require('passport-local').Strategy,
-  passportJWT = require('passport-jwt'),
-  Models = require('./models.js');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const passportJWT = require('passport-jwt');
+const Models = require('./models.js');
 
-let Users = Models.User,
-  JWTStrategy = passportJWT.Strategy,
-  ExtractJwt = passportJWT.ExtractJwt;
+const Users = Models.User;
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 
-passport.use(new localStrategy((username, password, done) => {
-  console.log(`Username: ${username} Password: ${password}`);
-  Users.findOne({
-    username: username
-  }, function (err, user) {
-    if (err) { return done(err) }
+//http authentication strategy
+passport.use(new LocalStrategy({
+  usernameField: 'Username',
+  passwordField: 'Password'
+}, (username, password, callback) => {
+  Users.findOne({ Username: username }, (error, user) => {
+    if (error) {
+      console.log(error);
+      return callback(error);
+    }
+
     if (!user) {
-      return done(null, false, 'Incorrect username...');
+      console.log('incorrect username');
+      return callback(null, false, { message: 'Incorrect username.' });
     }
+
     if (!user.validatePassword(password)) {
-      return done(null, false, "incorrect Password...")
+      console.log('incorrect password here');
+      return callback(null, false, { message: 'Incorrect password.' });
     }
-    return done(null, user);
-  })
 
+    console.log('finished');
+    return callback(null, user);
+  });
 }));
-/*
-  JSON Web Token Strategy: Aurthorization
-*/
 
-// This options will be use in the subsequent JWTStrategy to define how the JWT will be extrated from the request or veritfied
-
-// See: http://www.passportjs.org/packages/passport-jwt/ for details
-
-const opts = {
-  // jwtFromRequest (Required): is a function that extract the jwt from the request with data type of string or null in not found. 
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  // token is a Privacy Enhanced Mail (Base-64) enhance string
-  secretOrKey: 'your_jwt_secret'
-}
-
-passport.use(new JWTStrategy(opts, (jwtPayload, done) => {
-  return Users.findOne({
-    _id: jwtPayload._id
-  })
-    .then(user => {
-      if (!user) {
-        return done(null, false, { message: 'User does not exist' });
-      }
-
-      return done(null, user);
-    })
-    .catch(err => {
-      done(err, false, { 'Error': err });
-    });
-}));
+passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'this_is_my_secret'
+}, (jwtPayload, callback) => Users.findById(jwtPayload._id)
+  .then((user) => callback(null, user))
+  .catch((error) => callback(error))));
