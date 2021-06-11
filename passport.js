@@ -23,7 +23,7 @@ passport.use(new LocalStrategy(
         return done(null, false, 'Incorrect username or password');
       }
       // console.log('Finished');
-      return done(null, user);
+      return done(null, user, "signed in successfully");
 
     }).catch(err => {
       done(err, false, { 'Error': err });
