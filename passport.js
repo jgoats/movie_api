@@ -16,11 +16,13 @@ passport.use(new LocalStrategy(
   (username, password, done) => {
     console.log(`Username: ${username} Password: ${password}`);
     Users.findOne({
-      username: username,
-      password: password
+      username: username
     }).then(user => {
       if (!user) {
-        return done(null, false, 'Incorrect username or password');
+        return done(null, false, 'Incorrect username...');
+      }
+      if (!user.validatePassword(password)) {
+        return done(null, false, "incorrect password...")
       }
       // console.log('Finished');
       return done(null, user, "signed in successfully");
