@@ -18,16 +18,16 @@ passport.use(new LocalStrategy(
     Users.findOne({
       username: username
     }).then(user => {
-      /*if (!user) {
+      if (!user) {
         return done(null, false, 'Incorrect username...');
       }
       if (!user.validatePassword(password)) {
-        return done(null, false, 'Incorrect password...');
+        return done(null, false, `Incorrect password...${user}  ${password}  ${user.password}   ${user[0].password}`);
       }
 
       // console.log('Finished');
-      return done(null, user);*/
-      done(null, false, `error message${user} ${password} ${user.password} ${user[0].password}`);
+      return done(null, user);
+
     }).catch(err => {
       done(err, false, { 'Error': err });
     });
