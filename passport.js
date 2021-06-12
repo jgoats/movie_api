@@ -1,42 +1,55 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const passportJWT = require('passport-jwt');
-const Models = require('./models.js');
+const passport = require('passport'),
+  localStrategy = require('passport-local').Strategy,
+  passportJWT = require('passport-jwt'),
+  Models = require('./models.js');
 
-const Users = Models.User;
-const JWTStrategy = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;
+let Users = Models.user,
+  JWTStrategy = passportJWT.Strategy,
+  ExtractJwt = passportJWT.ExtractJwt;
+/* 
+  Local Strategy: Authentication
+*/
+passport.use(new localStrategy(
+  {
+    usernameField: 'username',
+    passwordField: 'password'
+  },
+  (username, password, done) => {
+    console.log(`Username: ${username} Password: ${password}`);
+    Users.findOne({
+      username: username
+    }).then(user => {
+      if (!user) {
+        return done(null, false, 'Incorrect username...');
+      }
+      if (!user.validatePassword(password)) {
+        return done(null, false, 'Incorrect password...');
+      }
 
-//http authentication strategy
-passport.use(new LocalStrategy({
-  usernameField: 'username',
-  passwordField: 'password'
-}, (username, password, callback) => {
-  Users.findOne({ username: username }, (error, user) => {
-    if (error) {
-      console.log(error);
-      return callback(error);
-    }
+      // console.log('Finished');
+      return done(null, user);
+    }).catch(err => {
+      done(err, false, { 'Error': err });
+    });
+  }));
 
-    if (!user) {
-      console.log('incorrect username');
-      return callback(null, false, { message: 'Incorrect username.' });
-    }
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: "the-secret-key"
+}
 
-    if (!user.validatePassword(password)) {
-      console.log('incorrect password here');
-      return callback(null, false, { message: 'Incorrect password.' });
-    }
+passport.use(new JWTStrategy(opts, (jwtPayload, done) => {
+  return Users.findOne({
+    _id: jwtPayload._id
+  })
+    .then(user => {
+      if (!user) {
+        return done(null, false, { message: 'User does not exist' });
+      }
 
-    console.log('finished');
-    return callback(null, user);
-  });
+      return done(null, user);
+    })
+    .catch(err => {
+      done(err, false, { 'Error': err });
+    });
 }));
-
-//JWT authentication strategy
-passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'this_is_my_secret'
-}, (jwtPayload, callback) => Users.findById(jwtPayload._id)
-  .then((user) => callback(null, user))
-  .catch((error) => callback(error))));
