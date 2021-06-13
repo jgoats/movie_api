@@ -23,7 +23,8 @@ userSchema.statics.hashPassword = (password) => {
 };
 
 userSchema.methods.validatePassword = function (password) {
-  return bcrypt.hashSync(password, this.password);
+  let compare = bcrypt.hashSync(password, 10);
+  return compare === this.password;
 };
 
 let Movie = mongoose.model('Movie', movieSchema, "movies");
