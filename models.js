@@ -19,7 +19,12 @@ let userSchema = mongoose.Schema({
 });
 
 userSchema.statics.hashPassword = (password) => {
-  return bcrypt.hashSync(password, 10);
+  return bcrypt.hash(password, 10, (err, passwordHash) => {
+    if (err) {
+      throw err
+    }
+    return passwordHash;
+  });
 };
 
 userSchema.methods.validatePassword = function (password) {
