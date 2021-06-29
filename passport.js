@@ -8,7 +8,6 @@ let Users = Models.User,
   ExtractJwt = passportJWT.ExtractJwt;
 /* 
   Local Strategy: Authentication
- "$2b$10$tah0Cog3Zohb9LZqlZqk7O5qCTVvytVbhebGqQ.MOJhx2HGQ7Hzc2"
 */
 passport.use(new localStrategy(
   {
