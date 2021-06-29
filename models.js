@@ -27,7 +27,7 @@ userSchema.methods.validatePassword = function (password) {
     if (err) {
       throw err;
     }
-    return [password, this.password];
+    return result;
   });
 };
 
