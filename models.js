@@ -19,7 +19,7 @@ let userSchema = mongoose.Schema({
 });
 
 userSchema.statics.hashPassword = (password) => {
-  return bcrypt.hash(password, 10, (err, passwordHash) => {
+  bcrypt.hash(password, 10, (err, passwordHash) => {
     if (err) {
       throw err
     }
