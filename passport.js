@@ -8,6 +8,7 @@ let Users = Models.User,
   ExtractJwt = passportJWT.ExtractJwt;
 /* 
   Local Strategy: Authentication
+ "$2b$10$tah0Cog3Zohb9LZqlZqk7O5qCTVvytVbhebGqQ.MOJhx2HGQ7Hzc2"
 */
 passport.use(new localStrategy(
   {
@@ -22,8 +23,7 @@ passport.use(new localStrategy(
         return done(null, false, 'Incorrect username...');
       }
       if (!user.validatePassword(password)) {
-        console.log('incorrect password');
-        return done(null, false, { message: 'Incorrect password.' });
+        return done(null, false, `Incorrect password...${user}`);
       }
 
       // console.log('Finished');
