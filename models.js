@@ -31,14 +31,19 @@ userSchema.pre("save", function (next) {
   })
 })
 
-userSchema.methods.validatePassword = function (password) {
-  return bcrypt.compare(password, this.password, (err, result) => {
+userSchema.methods.validatePassword = function (password, cb) {
+  bcrypt.compare(password, this.password, (err, isMatch) => {
     if (err) {
-      throw err;
+      return cb(err);
     }
-    return result;
-  });
-};
+    else {
+      if (!isMatch()) {
+        return cb(null, isMatch)
+      }
+      return cb(null, this);
+    }
+  })
+}
 
 let Movie = mongoose.model('Movie', movieSchema, "movies");
 let User = mongoose.model('User', userSchema, "users");

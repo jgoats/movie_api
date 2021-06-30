@@ -25,9 +25,9 @@ passport.use(new localStrategy(
         return done(null, false, `Incorrect password...${user}`);
       }
 
-
+      user.validatePassword(password, done);
       // console.log('Finished');
-      return done(null, user);
+      // return done(null, user);
     }).catch(err => {
       done(err, false, { 'Error': err });
     });
