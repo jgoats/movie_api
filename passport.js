@@ -9,28 +9,19 @@ let Users = Models.User,
 /* 
   Local Strategy: Authentication
 */
-passport.use(new localStrategy(
-  {
-    usernameField: 'username',
-    passwordField: 'password'
-  },
-  (username, password, done) => {
-    Users.findOne({
-      username: username
-    }).then(user => {
-      if (!user) {
-        return done(null, false, 'Incorrect username...');
-      }
-      if (!user.validatePassword(password)) {
-        return done(null, false, `Incorrect password...${user}`);
-      }
 
-      // console.log('Finished');
-      return done(null, user);
-    }).catch(err => {
-      done(err, false, { 'Error': err });
-    });
-  }));
+passport.use(new LocalStrategy((username, password, done) => {
+  User.findOne({ username }, (err, user) => {
+    if (err) {
+      return done(err);
+    }
+    if (!user) {
+      return done(null, false);
+    }
+    user.comparePassword(password, done)
+  })
+}))
+
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

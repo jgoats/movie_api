@@ -18,20 +18,32 @@ let userSchema = mongoose.Schema({
   favoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
 });
 
-userSchema.statics.hashPassword = (password) => {
-  return bcrypt.hashSync(password, 10);
-};
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password")) {
+    return next()
+  }
+  bcrypt.hash(this.password, 10, (err, passwordHash) => {
+    if (err) {
+      return next(err);
+    }
+    this.password = passwordHash;
+    next();
+  })
+})
 
-userSchema.methods.validatePassword = function (password) {
-  bcrypt.compare(password, this.password).then((result) => {
-    if (result) {
-      return result;
+userSchema.methods.comparePassword = function (password, cb) {
+  bcrypt.compare(password, this.password, (err, isMatch) => {
+    if (err) {
+      return cb(err);
     }
     else {
-      return false;
+      if (!isMatch()) {
+        return cb(null, isMatch)
+      }
+      return cb(null, this);
     }
   })
-};
+}
 
 let Movie = mongoose.model('Movie', movieSchema, "movies");
 let User = mongoose.model('User', userSchema, "users");
